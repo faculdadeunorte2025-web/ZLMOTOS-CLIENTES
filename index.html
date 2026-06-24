@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ZL Motos — Mecânico</title>
+<meta name="theme-color" content="#C8102E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ZL Mecânico">
+<link rel="manifest" href="data:application/json;charset=utf-8,{
+  &quot;name&quot;: &quot;ZL Motos — Mecânico&quot;,
+  &quot;short_name&quot;: &quot;ZL Mecânico&quot;,
+  &quot;description&quot;: &quot;Área do Mecânico — ZL Motos&quot;,
+  &quot;start_url&quot;: &quot;.&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#0a0a0b&quot;,
+  &quot;theme_color&quot;: &quot;#C8102E&quot;,
+  &quot;orientation&quot;: &quot;portrait-primary&quot;,
+  &quot;icons&quot;: [
+    { &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%230a0a0b'/%3E%3Crect x='8' y='8' width='176' height='176' rx='28' fill='none' stroke='%23C8102E' stroke-width='6'/%3E%3Ctext x='96' y='110' font-family='Arial Black' font-size='72' font-weight='900' text-anchor='middle' fill='%23C8102E'%3EZL%3C/text%3E%3Ctext x='96' y='145' font-family='Arial' font-size='22' font-weight='700' text-anchor='middle' fill='%23C8102E' opacity='.8'%3EMEC%3C/text%3E%3C/svg%3E&quot;, &quot;sizes&quot;: &quot;192x192&quot;, &quot;type&quot;: &quot;image/svg+xml&quot;, &quot;purpose&quot;: &quot;any maskable&quot; },
+    { &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%230a0a0b'/%3E%3Crect x='16' y='16' width='480' height='480' rx='70' fill='none' stroke='%23C8102E' stroke-width='14'/%3E%3Ctext x='256' y='295' font-family='Arial Black' font-size='190' font-weight='900' text-anchor='middle' fill='%23C8102E'%3EZL%3C/text%3E%3Ctext x='256' y='385' font-family='Arial' font-size='52' font-weight='700' text-anchor='middle' fill='%23C8102E' opacity='.8'%3EMECÂNICO%3C/text%3E%3C/svg%3E&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/svg+xml&quot;, &quot;purpose&quot;: &quot;any maskable&quot; }
+  ]
+}">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const cfg = {
+    apiKey: "AIzaSyCf6hV2ONkPdoGvUFgslYrZUShsOeUMzvI",
+    authDomain: "zl-motos.firebaseapp.com",
+    projectId: "zl-motos",
+    storageBucket: "zl-motos.firebasestorage.app",
+    messagingSenderId: "968389356035",
+    appId: "1:968389356035:web:115ad32b691cf12a77fc36"
+  };
+
+  const app = initializeApp(cfg);
+  const db  = getFirestore(app);
+
+  window._db = db;
+  window._fsDoc      = (path, ...segs) => doc(db, path, ...segs);
+  window._fsSet      = (ref, data, opts) => setDoc(ref, data, opts || {});
+  window._fsGet      = (ref) => getDoc(ref);
+  window._fsDel      = (ref) => deleteDoc(ref);
+  window._fsUpdate   = (ref, data) => updateDoc(ref, data);
+  window._fsSnap     = (ref, cb) => onSnapshot(ref, cb);
+  window._fsCol      = (path, ...segs) => collection(db, path, ...segs);
+
+  window._mecDoc     = (nome) => doc(db, 'zlmotos_mecanico_mecs', encodeURIComponent(nome));
+  window._rascDoc    = (id)   => doc(db, 'zlmotos_mecanico_orcs', id);
+  window._rascCol    = ()     => collection(db, 'zlmotos_mecanico_orcs');
+  window._tarefasCol = ()     => collection(db, 'zlmotos_mecanico_tar');
+  window._tarefaDoc  = (id)   => doc(db, 'zlmotos_mecanico_tar', id);
+
+  window._fbReady = true;
+  document.dispatchEvent(new Event('fb-ready'));
+</script>
+
+<style>
+/* ══════════════════════════════════════
+   ZL MOTOS — MECÂNICO · TEMA UNIFICADO
+   ══════════════════════════════════════ */
+
+:root {
+  --bg:  #0a0a0b;
+  --sf:  #111114;
+  --ev:  #18181c;
+  --bd:  rgba(255,255,255,0.07);
+  --bd2: rgba(255,255,255,0.11);
+  --tx:  #f0f0f0;
+  --t2:  #9a9aaa;
+  --t3:  #6b6b75;
+  --pr:  #C8102E;
+  --prh: #E8192E;
+  --prs: rgba(200,16,46,0.12);
+  --ok:  #2BE08C;
+  --oks: rgba(43,224,140,0.10);
+  --wa:  #F5D547;
+  --was: rgba(245,213,71,0.10);
+  --info:#3DD7E5;
+  --inf: rgba(61,215,229,0.10);
+  --ers: rgba(200,16,46,0.10);
+
+  --fd: "Bebas Neue", sans-serif;
+  --ft: "Rajdhani", "Inter", sans-serif;
+  --fb: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --fm: "Share Tech Mono", ui-monospace, monospace;
+
+  --r1: 6px; --r2: 10px; --r3: 16px; --rf: 999px;
+
+  --sh1: 0 1px 0 rgba(255,255,255,0.02) inset, 0 1px 2px rgba(0,0,0,0.4);
+  --sh2: 0 8px 24px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.03) inset;
+  --tf: 120ms; --tb: 150ms;
+  --ease: cubic-bezier(0.2,0.6,0.2,1);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+html,body {
+  background:var(--bg); color:var(--tx);
+  font-family:var(--fb); font-size:.9375rem; line-height:1.55;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  min-height:100dvh; overscroll-behavior:none;
+}
+
+::selection { background:var(--prs); color:var(--tx); }
+
+/* ─── INPUTS GLOBAIS ─── */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+select, textarea {
+  background:#1e1e22; color:#fff;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:var(--r1);
+  font-family:var(--fb); font-size:.8125rem;
+  padding:9px 12px; outline:none;
+  transition:border-color .2s, box-shadow .2s;
+  width:100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color:rgba(200,16,46,.55);
+  box-shadow:0 0 0 3px rgba(200,16,46,.1);
+}
+input::placeholder, textarea::placeholder { color:#48484f; }
+textarea { resize:vertical; min-height:72px; }
+input[type="number"] { -moz-appearance:textfield; }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance:none; display:none !important; }
+
+/* ─── BOTÕES GLOBAIS ─── */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  height:34px; padding:0 14px;
+  background:var(--ev); border:1px solid var(--bd2);
+  border-radius:var(--r2); color:var(--t2);
+  font-family:var(--fb); font-size:.8rem; font-weight:500;
+  cursor:pointer;
+  transition:background var(--tf), border-color var(--tf), color var(--tf);
+  white-space:nowrap; user-select:none; text-decoration:none;
+}
+.btn:hover { background:rgba(255,255,255,.07); border-color:var(--pr); color:var(--tx); }
+.btn:active { opacity:.82; }
+
+.btn-pr {
+  background:var(--pr) !important; border-color:transparent !important;
+  color:#fff !important; font-family:var(--ft) !important;
+  font-weight:700 !important; letter-spacing:.04em !important;
+}
+.btn-pr:hover { background:var(--prh) !important; }
+.btn-pr:active { opacity:.85; transform:scale(.98); }
+.btn-pr:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+
+/* ─── LOGIN ─── */
+#pg-login {
+  min-height:100dvh; display:flex; align-items:center; justify-content:center;
+  padding:24px;
+  background:radial-gradient(ellipse at 50% 0%, rgba(200,16,46,.12) 0%, transparent 60%);
+}
+.lbox {
+  width:100%; max-width:400px;
+  background:var(--sf); border:1px solid var(--bd2);
+  border-radius:var(--r3); padding:36px 28px; box-shadow:var(--sh2);
+}
+.llogo { text-align:center; margin-bottom:28px; }
+.llogo svg { display:block; margin:0 auto 12px; }
+.llogo h1 { font-family:var(--fd); font-size:2rem; letter-spacing:.06em; color:var(--tx); }
+.llogo p { font-size:.72rem; color:var(--t3); margin-top:3px; letter-spacing:.1em; text-transform:uppercase; font-family:var(--ft); }
+
+.lbl {
+  display:block; font-size:.68rem; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--t2); margin-bottom:6px; font-family:var(--ft);
+}
+
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.chip {
+  padding:7px 16px; background:var(--ev); border:1px solid var(--bd2);
+  border-radius:var(--rf); color:var(--t2);
+  font-family:var(--ft); font-size:.88rem; font-weight:600;
+  cursor:pointer; transition:all var(--tb) var(--ease); user-select:none;
+}
+.chip:hover,.chip.on { background:var(--prs); border-color:var(--pr); color:var(--tx); }
+
+.inp {
+  width:100%; padding:11px 14px; background:#1e1e22;
+  border:1px solid rgba(255,255,255,.1); border-radius:var(--r1);
+  color:var(--tx); font-family:var(--fb); font-size:.9rem; font-weight:500;
+  outline:none; transition:border-color .2s, box-shadow .2s; margin-bottom:16px;
+}
+.inp:focus { border-color:rgba(200,16,46,.55); box-shadow:0 0 0 3px rgba(200,16,46,.1); }
+.inp::placeholder { color:#48484f; }
+textarea.inp { resize:vertical; min-height:70px; margin-bottom:0; }
+
+/* ─── APP ─── */
+#pg-app { display:none; flex-direction:column; min-height:100dvh; }
+
+.hdr {
+  background:var(--sf); border-bottom:1px solid var(--bd);
+  padding:0 16px; height:56px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100; backdrop-filter:blur(8px);
+}
+.hdr-l { display:flex; align-items:center; gap:10px; }
+.hdr-logo {
+  width:32px; height:32px; background:var(--pr); border-radius:var(--r1);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--fd); font-size:.85rem; color:#fff; letter-spacing:.02em;
+}
+.hdr-n { font-family:var(--fd); font-size:1.1rem; letter-spacing:.04em; color:var(--tx); }
+.hdr-m { font-family:var(--ft); font-size:.72rem; color:var(--pr); font-weight:600; letter-spacing:.08em; text-transform:uppercase; }
+.btn-sair {
+  background:none; border:1px solid var(--bd2); border-radius:var(--r1);
+  color:var(--t3); font-family:var(--ft); font-size:.72rem; font-weight:600;
+  padding:5px 12px; cursor:pointer; transition:all var(--tb);
+}
+.btn-sair:hover { border-color:var(--pr); color:var(--pr); }
+
+/* ─── NOTIF BAR ─── */
+.notif-bar {
+  background:var(--inf); border-bottom:1px solid rgba(61,215,229,.2);
+  padding:9px 16px; font-size:.78rem; color:var(--info);
+  display:flex; align-items:center; gap:8px; cursor:pointer;
+}
+.notif-bar button {
+  margin-left:auto; background:rgba(61,215,229,.12);
+  border:1px solid rgba(61,215,229,.3); border-radius:var(--r1);
+  color:var(--info); font-family:var(--ft); font-size:.72rem; font-weight:700;
+  padding:4px 12px; cursor:pointer; transition:background var(--tf);
+}
+.notif-bar button:hover { background:rgba(61,215,229,.22); }
+
+/* ─── TABS ─── */
+.tabs { background:var(--sf); border-bottom:1px solid var(--bd); display:flex; }
+.tab {
+  flex:1; padding:13px 6px; text-align:center;
+  font-family:var(--ft); font-size:.8rem; font-weight:600; letter-spacing:.04em;
+  color:var(--t3); cursor:pointer; border-bottom:2px solid transparent;
+  transition:all var(--tb) var(--ease); position:relative; user-select:none;
+}
+.tab.on { color:var(--pr); border-bottom-color:var(--pr); }
+.tab:hover:not(.on) { color:var(--t2); background:rgba(255,255,255,.03); }
+.tbadge {
+  position:absolute; top:8px; right:calc(50% - 26px);
+  background:var(--pr); color:#fff; border-radius:var(--rf);
+  font-size:.58rem; font-weight:700; padding:1px 5px; min-width:16px; text-align:center;
+}
+
+.body { flex:1; padding:16px; max-width:640px; margin:0 auto; width:100%; }
+
+/* ─── CARDS ─── */
+.card {
+  background:var(--sf); border:1px solid var(--bd);
+  border-radius:var(--r2); padding:16px 18px; margin-bottom:12px;
+  transition:border-color var(--tf);
+}
+.sec {
+  font-family:var(--ft); font-size:.68rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--t2); margin-bottom:12px; padding-bottom:8px;
+  border-bottom:1px solid var(--bd);
+}
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+/* ─── TAREFA CARD ─── */
+.tarefa-card {
+  background:var(--sf); border:1px solid var(--bd); border-radius:var(--r2);
+  padding:14px 16px; margin-bottom:10px;
+  border-left:3px solid var(--bd2);
+  transition:border-color var(--tb) var(--ease), box-shadow var(--tb);
+}
+.tarefa-card:hover { box-shadow:var(--sh1); }
+.tarefa-card.nova { border-left-color:var(--pr); background:linear-gradient(135deg,rgba(200,16,46,.04) 0%,transparent 60%); animation:pulseL 2s ease 3; }
+@keyframes pulseL { 0%,100%{border-left-color:var(--pr)} 50%{border-left-color:rgba(200,16,46,.3)} }
+.tarefa-card.feita { border-left-color:var(--ok); opacity:.6; }
+.tc-top { display:flex; align-items:flex-start; gap:12px; }
+.tc-check {
+  width:20px; height:20px; border-radius:5px; border:2px solid var(--bd2);
+  background:none; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  margin-top:2px; transition:all var(--tb); font-size:.7rem;
+}
+.tc-check.feita { background:var(--ok); border-color:var(--ok); color:#000; font-weight:900; }
+.tc-check:hover:not(.feita) { border-color:var(--pr); }
+.tc-txt { flex:1; }
+.tc-titulo { font-family:var(--ft); font-size:.95rem; font-weight:600; color:var(--tx); }
+.tc-moto { font-size:.78rem; color:var(--t2); margin-top:3px; }
+.tc-data { font-size:.7rem; color:var(--t3); margin-top:6px; font-family:var(--fm); }
+
+/* ─── FORM ORÇAMENTO — ITENS ─── */
+.itens-lista { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+.item-row {
+  display:grid; grid-template-columns:1fr auto auto auto; gap:8px;
+  align-items:center;
+  background:var(--ev); border:1px solid var(--bd);
+  border-radius:var(--r1); padding:9px 12px;
+  transition:border-color var(--tf);
+  animation:slideIn .15s var(--ease);
+}
+.item-row:hover { border-color:var(--bd2); }
+@keyframes slideIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+.item-desc { font-family:var(--ft); font-size:.9rem; font-weight:600; color:var(--tx); }
+.item-qtd { font-size:.75rem; color:var(--t3); font-family:var(--fm); }
+.item-preco { font-family:var(--fm); font-size:.88rem; font-weight:700; color:var(--ok); white-space:nowrap; }
+.btn-x {
+  background:none; border:none; color:var(--t3);
+  cursor:pointer; font-size:.85rem; padding:3px 6px;
+  border-radius:var(--r1); transition:color var(--tf), background var(--tf); line-height:1;
+}
+.btn-x:hover { color:var(--pr); background:var(--ers); }
+
+/* ─── ADD-FORM GENÉRICO ─── */
+.add-form {
+  background:rgba(200,16,46,.04); border:1px dashed rgba(200,16,46,.22);
+  border-radius:var(--r1); padding:12px; margin-bottom:12px;
+}
+.g3 { display:grid; grid-template-columns:1fr 64px 108px; gap:8px; margin-bottom:8px; }
+.inp-sm {
+  width:100%; padding:8px 10px; background:var(--sf);
+  border:1px solid var(--bd2); border-radius:var(--r1);
+  color:var(--tx); font-family:var(--fb); font-size:.8125rem;
+  outline:none; transition:border-color .2s, box-shadow .2s;
+}
+.inp-sm:focus { border-color:rgba(200,16,46,.55); box-shadow:0 0 0 3px rgba(200,16,46,.1); }
+.inp-sm::placeholder { color:#48484f; }
+
+.btn-add-item {
+  display:inline-flex; align-items:center; justify-content:center; gap:5px;
+  background:var(--prs); border:1px solid rgba(200,16,46,.3);
+  border-radius:var(--r1); color:var(--pr);
+  font-family:var(--ft); font-size:.8rem; font-weight:700;
+  padding:7px 14px; cursor:pointer;
+  transition:background var(--tf), border-color var(--tf);
+  width:100%;
+}
+.btn-add-item:hover { background:rgba(200,16,46,.2); border-color:rgba(200,16,46,.45); }
+
+.total-box {
+  background:var(--ev); border:1px solid var(--bd); border-radius:var(--r1);
+  padding:11px 14px; display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:6px;
+}
+.total-lbl { font-family:var(--ft); font-size:.66rem; font-weight:700; color:var(--t3); letter-spacing:.1em; text-transform:uppercase; }
+.total-val { font-family:var(--fm); font-size:1.2rem; font-weight:700; color:var(--ok); }
+
+/* ─── PEÇAS A COMPRAR — CARD ─── */
+#card-pecas {
+  border-color:rgba(245,213,71,.15);
+  background:linear-gradient(160deg, rgba(245,213,71,.03) 0%, transparent 60%);
+}
+
+.pecas-sec-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(245,213,71,.15);
+}
+.pecas-sec-title {
+  font-family:var(--ft); font-size:.68rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--wa);
+  display:flex; align-items:center; gap:6px;
+}
+.pecas-count-badge {
+  display:none; align-items:center; justify-content:center;
+  background:rgba(245,213,71,.15); border:1px solid rgba(245,213,71,.3);
+  color:var(--wa); font-family:var(--ft); font-size:.62rem; font-weight:700;
+  padding:2px 9px; border-radius:var(--rf); min-width:22px;
+  animation:popIn .2s var(--ease);
+}
+.pecas-count-badge.visible { display:inline-flex; }
+@keyframes popIn { from{transform:scale(.6);opacity:0} to{transform:scale(1);opacity:1} }
+
+/* Lista de peças adicionadas */
+.pecas-lista { display:flex; flex-direction:column; gap:5px; margin-bottom:10px; }
+.peca-row {
+  display:grid; grid-template-columns:auto 1fr auto auto; gap:8px;
+  align-items:center;
+  background:rgba(245,213,71,.05); border:1px solid rgba(245,213,71,.15);
+  border-radius:var(--r1); padding:8px 10px;
+  transition:border-color var(--tf), background var(--tf);
+  animation:slideIn .15s var(--ease);
+}
+.peca-row:hover { border-color:rgba(245,213,71,.3); background:rgba(245,213,71,.08); }
+.peca-num {
+  width:20px; height:20px; border-radius:50%;
+  background:rgba(245,213,71,.12); border:1px solid rgba(245,213,71,.2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--fm); font-size:.62rem; color:var(--wa); font-weight:700;
+  flex-shrink:0;
+}
+.peca-desc { font-family:var(--ft); font-size:.88rem; font-weight:600; color:var(--tx); }
+.peca-qtd-badge {
+  background:rgba(245,213,71,.1); border:1px solid rgba(245,213,71,.2);
+  color:var(--wa); font-family:var(--fm); font-size:.7rem; font-weight:700;
+  padding:2px 8px; border-radius:var(--rf); white-space:nowrap;
+}
+
+/* Add form de peças */
+.add-form-pecas {
+  background:rgba(245,213,71,.04); border:1px dashed rgba(245,213,71,.25);
+  border-radius:var(--r1); padding:12px; margin-bottom:10px;
+}
+.g2-pecas { display:grid; grid-template-columns:1fr 64px; gap:8px; margin-bottom:8px; }
+.inp-sm-wa::placeholder { color:#48484f; }
+.inp-sm-wa {
+  width:100%; padding:8px 10px; background:var(--sf);
+  border:1px solid rgba(245,213,71,.2); border-radius:var(--r1);
+  color:var(--tx); font-family:var(--fb); font-size:.8125rem;
+  outline:none; transition:border-color .2s, box-shadow .2s;
+}
+.inp-sm-wa:focus { border-color:rgba(245,213,71,.5); box-shadow:0 0 0 3px rgba(245,213,71,.08); }
+.inp-sm-wa::placeholder { color:#48484f; }
+
+.btn-add-peca {
+  display:flex; align-items:center; justify-content:center; gap:5px;
+  background:rgba(245,213,71,.08); border:1px solid rgba(245,213,71,.25);
+  border-radius:var(--r1); color:var(--wa);
+  font-family:var(--ft); font-size:.8rem; font-weight:700;
+  padding:8px 14px; cursor:pointer; width:100%;
+  transition:background var(--tf), border-color var(--tf);
+}
+.btn-add-peca:hover { background:rgba(245,213,71,.16); border-color:rgba(245,213,71,.45); }
+.btn-add-peca:active { transform:scale(.98); }
+
+/* Resumo / estado vazio de peças */
+.pecas-empty {
+  display:flex; align-items:center; gap:8px; padding:10px 12px;
+  background:rgba(245,213,71,.04); border:1px solid rgba(245,213,71,.12);
+  border-radius:var(--r1); margin-bottom:10px;
+  font-size:.78rem; color:var(--t3);
+}
+
+/* Botão copiar lista */
+.btn-copiar-pecas {
+  display:none; align-items:center; gap:5px; margin-top:8px;
+  background:none; border:1px solid rgba(245,213,71,.25);
+  border-radius:var(--r1); color:var(--wa);
+  font-family:var(--ft); font-size:.74rem; font-weight:600;
+  padding:5px 12px; cursor:pointer;
+  transition:background var(--tf), border-color var(--tf);
+}
+.btn-copiar-pecas.visible { display:inline-flex; }
+.btn-copiar-pecas:hover { background:rgba(245,213,71,.08); border-color:rgba(245,213,71,.4); }
+
+/* ─── ORÇAMENTOS ENVIADOS — seção peças no card ─── */
+.orc-pecas-comprar {
+  margin-top:10px; border-radius:var(--r1); overflow:hidden;
+  border:1px solid rgba(245,213,71,.2);
+}
+.orc-pecas-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:7px 12px; cursor:pointer; user-select:none;
+  background:rgba(245,213,71,.07); border-bottom:1px solid rgba(245,213,71,.15);
+}
+.orc-pecas-header-l {
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--ft); font-size:.68rem; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--wa);
+}
+.orc-pecas-arrow { font-size:.65rem; color:var(--t3); transition:transform .2s; }
+.orc-pecas-arrow.open { transform:rotate(90deg); }
+.orc-pecas-body { padding:8px 10px; display:flex; flex-direction:column; gap:5px; }
+.orc-peca-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:6px 10px; background:var(--ev); border-radius:var(--r1); font-size:.82rem;
+}
+.orc-peca-nome { font-weight:600; color:var(--tx); }
+.orc-peca-qtd { font-family:var(--fm); font-size:.72rem; color:var(--wa); white-space:nowrap; }
+
+/* ─── BOTÃO ENVIAR ─── */
+.btn-enviar {
+  width:100%; padding:15px;
+  background:var(--pr); border:none; border-radius:var(--r2);
+  color:#fff; font-family:var(--fd); font-size:1.1rem; letter-spacing:.06em;
+  cursor:pointer; transition:background var(--tb), transform .1s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:4px;
+}
+.btn-enviar:hover { background:var(--prh); }
+.btn-enviar:active { transform:scale(.98); }
+.btn-enviar:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+/* ─── MEUS ORÇAMENTOS ─── */
+.orc-card {
+  background:var(--sf); border:1px solid var(--bd);
+  border-radius:var(--r2); padding:14px 16px; margin-bottom:10px;
+  transition:border-color var(--tb);
+}
+.orc-card.pendente  { border-left:3px solid var(--wa); }
+.orc-card.revisando { border-left:3px solid var(--info); }
+.orc-card.aprovado  { border-left:3px solid var(--ok); }
+.orc-card.reprovado { border-left:3px solid var(--pr); }
+.orc-top { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; }
+.orc-moto { font-family:var(--ft); font-size:1rem; font-weight:700; color:var(--tx); }
+.orc-placa {
+  font-family:var(--fm); font-size:.72rem;
+  background:var(--ev); border:1px solid var(--bd2);
+  border-radius:4px; padding:2px 8px; color:var(--t2);
+}
+
+/* ─── BADGES ─── */
+.badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:3px 10px; border-radius:var(--rf);
+  font-family:var(--ft); font-size:.63rem; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase;
+  white-space:nowrap; border:1px solid;
+}
+.bw  { background:var(--was); border-color:rgba(245,213,71,.3);  color:var(--wa); }
+.bi  { background:var(--inf); border-color:rgba(61,215,229,.3);  color:var(--info); }
+.bs  { background:var(--oks); border-color:rgba(43,224,140,.3);  color:var(--ok); }
+.bd2c{ background:var(--ers); border-color:rgba(200,16,46,.3);   color:var(--pr); }
+
+.orc-obs-dono {
+  margin-top:9px; padding:8px 12px;
+  background:var(--ers); border-left:2px solid var(--pr);
+  border-radius:0 var(--r1) var(--r1) 0;
+  font-size:.78rem; color:var(--t2);
+}
+.orc-obs-dono strong { color:var(--pr); }
+
+.btn-del-orc {
+  background:var(--ers); border:1px solid rgba(200,16,46,.3);
+  border-radius:var(--r1); color:var(--pr);
+  font-family:var(--ft); font-size:.72rem; font-weight:700;
+  padding:5px 12px; cursor:pointer; margin-top:8px;
+  transition:all var(--tf);
+}
+.btn-del-orc:hover { background:rgba(200,16,46,.2); }
+
+.vazio { text-align:center; padding:48px 20px; color:var(--t3); font-size:.875rem; }
+
+/* ─── SPINNER ─── */
+.spin {
+  display:inline-block; width:15px; height:15px;
+  border:2px solid rgba(255,255,255,.2);
+  border-top-color:#fff; border-radius:50%;
+  animation:sp .7s linear infinite;
+}
+@keyframes sp { to{transform:rotate(360deg)} }
+
+/* ─── TOAST ─── */
+#toast {
+  position:fixed; bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--ev); border:1px solid var(--bd2);
+  border-radius:var(--r2); padding:11px 20px;
+  font-family:var(--ft); font-size:.88rem; font-weight:600; color:var(--tx);
+  z-index:9999; transition:transform .3s var(--ease);
+  white-space:nowrap; box-shadow:var(--sh2); pointer-events:none;
+}
+#toast.on  { transform:translateX(-50%) translateY(0); }
+#toast.ok  { border-color:rgba(43,224,140,.4); color:var(--ok); }
+#toast.er  { border-color:rgba(200,16,46,.4); color:#ff7070; }
+
+/* ─── PWA INSTALL BANNER ─── */
+#pwa-install-bar {
+  background:linear-gradient(135deg,rgba(200,16,46,.1) 0%,rgba(200,16,46,.04) 100%);
+  border-bottom:1px solid rgba(200,16,46,.25);
+  padding:10px 16px; display:flex; align-items:center; gap:10px;
+  font-size:.82rem; color:var(--tx);
+  position:sticky; top:0; z-index:200; backdrop-filter:blur(8px);
+}
+#pwa-install-bar .pwa-icon {
+  width:36px; height:36px; background:var(--pr); border-radius:var(--r1);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--fd); font-size:.85rem; color:#fff; flex-shrink:0;
+}
+#pwa-install-bar .pwa-txt { flex:1; min-width:0; }
+#pwa-install-bar .pwa-txt strong { display:block; font-family:var(--ft); font-size:.85rem; font-weight:700; }
+#pwa-install-bar .pwa-txt span { font-size:.72rem; color:var(--t3); }
+#pwa-install-bar .btn-instalar {
+  background:var(--pr); border:none; border-radius:var(--r1); color:#fff;
+  font-family:var(--ft); font-size:.82rem; font-weight:700;
+  padding:7px 14px; cursor:pointer; white-space:nowrap; flex-shrink:0;
+  transition:background var(--tf);
+}
+#pwa-install-bar .btn-instalar:hover { background:var(--prh); }
+#pwa-install-bar .btn-fechar-pwa {
+  background:none; border:none; color:var(--t3);
+  cursor:pointer; font-size:1rem; padding:4px; line-height:1; flex-shrink:0;
+}
+#ios-install-bar {
+  background:linear-gradient(135deg,rgba(200,16,46,.1),rgba(200,16,46,.04));
+  border-bottom:1px solid rgba(200,16,46,.2);
+  padding:10px 16px; font-size:.78rem; color:var(--tx);
+  display:flex; align-items:flex-start; gap:10px;
+  position:sticky; top:0; z-index:200;
+}
+#ios-install-bar .ios-steps { flex:1; line-height:1.6; font-family:var(--fb); }
+#ios-install-bar .ios-steps strong { display:block; font-family:var(--ft); font-weight:700; margin-bottom:2px; }
+#ios-install-bar .btn-fechar-ios { background:none; border:none; color:var(--t3); cursor:pointer; font-size:1rem; padding:4px; }
+
+@media (max-width:400px) { .g3 { grid-template-columns:1fr 60px; } }
+</style>
+</head>
+<body>
+
+<!-- PWA INSTALL BARS -->
+<div id="pwa-install-bar" style="display:none">
+  <div class="pwa-icon">ZL</div>
+  <div class="pwa-txt">
+    <strong>Instalar na Tela Inicial</strong>
+    <span>Acesso rápido, igual a um app</span>
+  </div>
+  <button class="btn-instalar" onclick="instalarPWA()">📲 Instalar</button>
+  <button class="btn-fechar-pwa" onclick="fecharBannerPWA()" title="Fechar">✕</button>
+</div>
+
+<div id="ios-install-bar" style="display:none">
+  <div style="font-size:1.2rem;flex-shrink:0;margin-top:1px">📲</div>
+  <div class="ios-steps">
+    <strong>Instalar na Tela Inicial (iPhone/iPad)</strong>
+    Toque em <strong>⬆️ Compartilhar</strong> → <strong>"Adicionar à Tela Inicial"</strong>
+  </div>
+  <button class="btn-fechar-ios" onclick="fecharBannerIOS()">✕</button>
+</div>
+
+<!-- LOGIN -->
+<div id="pg-login">
+  <div class="lbox">
+    <div class="llogo">
+      <svg width="52" height="52" viewBox="0 0 52 52"><rect width="52" height="52" rx="12" fill="#C8102E"/><text x="26" y="37" font-family="Arial Black,sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#fff">ZL</text></svg>
+      <h1>ZL Motos</h1>
+      <p>Área do Mecânico</p>
+    </div>
+    <div id="chips-wrap">
+      <label class="lbl">Acesso rápido</label>
+      <div class="chips" id="chips"></div>
+    </div>
+    <label class="lbl">Seu nome</label>
+    <input class="inp" id="in-nome" placeholder="Digite seu nome completo" maxlength="40" oninput="syncChip()" onkeydown="if(event.key==='Enter')entrar()">
+    <div id="login-erro" style="display:none;margin-bottom:14px;padding:10px 14px;background:rgba(200,16,46,.1);border:1px solid rgba(200,16,46,.35);border-radius:6px;font-size:.82rem;color:#C8102E;font-family:var(--ft);font-weight:600;line-height:1.5">
+      🔒 Nome não autorizado.<br>
+      <span style="font-weight:400;color:var(--t3);font-size:.76rem">Solicite ao responsável que te cadastre no sistema ZL Motos.</span>
+    </div>
+    <button class="btn-pr btn" id="btn-entrar" onclick="entrar()" disabled style="width:100%;height:44px;font-size:.95rem">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="pg-app">
+  <header class="hdr">
+    <div class="hdr-l">
+      <div class="hdr-logo">ZL</div>
+      <div>
+        <div class="hdr-n">ZL Motos</div>
+        <div class="hdr-m" id="hdr-mec">Mecânico</div>
+      </div>
+    </div>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </header>
+
+  <div id="notif-bar" class="notif-bar" style="display:none" onclick="pedirNotif()">
+    🔔 Ativar notificações para receber tarefas novas
+    <button onclick="event.stopPropagation();pedirNotif()">Ativar</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" id="t-tarefas" onclick="goTab('tarefas')">✅ Tarefas <span class="tbadge" id="badge-t" style="display:none">0</span></div>
+    <div class="tab" id="t-novo"    onclick="goTab('novo')">➕ Orçamento</div>
+    <div class="tab" id="t-orcs"    onclick="goTab('orcs')">📋 Meus Envios <span class="tbadge" id="badge-o" style="display:none">0</span></div>
+  </div>
+
+  <div class="body">
+    <!-- TAREFAS -->
+    <div id="pg-tarefas">
+      <div id="lista-tarefas"><div class="vazio">Carregando...</div></div>
+    </div>
+
+    <!-- NOVO ORC -->
+    <div id="pg-novo" style="display:none">
+
+      <!-- Dados da Moto -->
+      <div class="card">
+        <div class="sec">🏍️ Dados da Moto</div>
+        <div class="g2">
+          <div><label class="lbl">Moto / Modelo</label><input class="inp" id="f-moto" placeholder="Honda CB 300" maxlength="60" style="margin-bottom:0"></div>
+          <div><label class="lbl">Placa</label><input class="inp" id="f-placa" placeholder="ABC-1234" maxlength="10" style="text-transform:uppercase;margin-bottom:0" oninput="this.value=this.value.toUpperCase()"></div>
+        </div>
+        <div style="margin-top:12px"><label class="lbl">Cliente (opcional)</label><input class="inp" id="f-cli" placeholder="Nome do cliente" maxlength="80" style="margin-bottom:0"></div>
+      </div>
+
+      <!-- Peças e Serviços (com preço) -->
+      <div class="card">
+        <div class="sec">🔧 Peças e Serviços</div>
+        <div class="itens-lista" id="itens-lista"></div>
+        <div class="add-form">
+          <div class="g3">
+            <input class="inp-sm" id="ni-desc" placeholder="Peça / serviço" onkeydown="if(event.key==='Enter')document.getElementById('ni-qtd').focus()">
+            <input class="inp-sm" id="ni-qtd" type="number" placeholder="Qtd" value="1" min="1" style="text-align:center" onkeydown="if(event.key==='Enter')document.getElementById('ni-val').focus()">
+            <input class="inp-sm" id="ni-val" type="number" placeholder="R$ Unit." step="0.01" min="0" onkeydown="if(event.key==='Enter')addItem()">
+          </div>
+          <button class="btn-add-item" onclick="addItem()">+ Adicionar</button>
+        </div>
+        <div class="total-box">
+          <span class="total-lbl">Total estimado</span>
+          <span class="total-val" id="total-disp">R$ 0,00</span>
+        </div>
+      </div>
+
+      <!-- Peças a Comprar -->
+      <div class="card" id="card-pecas">
+        <div class="pecas-sec-header">
+          <div class="pecas-sec-title">
+            🛒 Peças a Comprar
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn-copiar-pecas" id="btn-copiar-pecas" onclick="copiarListaPecas()" title="Copiar lista para WhatsApp">
+              📋 Copiar lista
+            </button>
+            <span class="pecas-count-badge" id="pecas-count-badge">0</span>
+          </div>
+        </div>
+
+        <!-- Estado vazio -->
+        <div class="pecas-empty" id="pecas-empty">
+          <span style="font-size:1.1rem">🔩</span>
+          <span>Nenhuma peça adicionada — adicione peças que precisam ser compradas antes do serviço</span>
+        </div>
+
+        <!-- Lista -->
+        <div class="pecas-lista" id="pecas-lista"></div>
+
+        <!-- Add form -->
+        <div class="add-form-pecas">
+          <div class="g2-pecas">
+            <input class="inp-sm-wa" id="np-desc" placeholder="Nome da peça (ex: Pastilha de freio)" maxlength="80"
+              onkeydown="if(event.key==='Enter')document.getElementById('np-qtd').focus()">
+            <input class="inp-sm-wa" id="np-qtd" type="number" placeholder="Qtd" value="1" min="1" style="text-align:center"
+              onkeydown="if(event.key==='Enter')addPeca()">
+          </div>
+          <button class="btn-add-peca" onclick="addPeca()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Adicionar Peça
+          </button>
+        </div>
+      </div>
+
+      <!-- Observações -->
+      <div class="card">
+        <div class="sec">📝 Observações</div>
+        <textarea class="inp" id="f-obs" placeholder="Problemas encontrados, diagnóstico, comentários para o dono..."></textarea>
+      </div>
+
+      <button class="btn-enviar" id="btn-env" onclick="enviar()">📤 Enviar para Revisão</button>
+    </div>
+
+    <!-- MEUS ENVIOS -->
+    <div id="pg-orcs" style="display:none">
+      <div id="lista-orcs"><div class="vazio">Carregando...</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════
+let MEU_NOME   = null;
+let tabAtual   = 'tarefas';
+let itens      = [];
+let pecasComprar = [];
+let unsTarefas = null;
+let unsOrcs    = null;
+
+// ── LOGIN ─────────────────────────────
+function carregarChips() {
+  const historico = JSON.parse(localStorage.getItem('zl_mec_hist') || '[]');
+  const el   = document.getElementById('chips');
+  const wrap = document.getElementById('chips-wrap');
+  if (!historico.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  el.innerHTML = historico.map(n =>
+    `<div class="chip" onclick="selecionarChip('${esc(n)}')">${esc(n)}</div>`
+  ).join('');
+}
+
+function selecionarChip(nome) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  document.querySelectorAll('.chip').forEach(c => { if (c.textContent === nome) c.classList.add('on'); });
+  document.getElementById('in-nome').value = nome;
+  document.getElementById('btn-entrar').disabled = false;
+}
+
+function syncChip() {
+  const v = document.getElementById('in-nome').value.trim();
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  document.getElementById('btn-entrar').disabled = v.length < 2;
+}
+
+async function entrar() {
+  const nome = document.getElementById('in-nome').value.trim();
+  if (nome.length < 2) return;
+  document.getElementById('login-erro').style.display = 'none';
+  const btn = document.getElementById('btn-entrar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Verificando...';
+  try {
+    const snap = await window._fsGet(window._mecDoc(nome));
+    if (!snap.exists()) {
+      document.getElementById('login-erro').style.display = 'block';
+      btn.disabled = false; btn.innerHTML = 'Entrar'; return;
+    }
+  } catch(e) {
+    document.getElementById('login-erro').style.display = 'block';
+    document.getElementById('login-erro').innerHTML =
+      '⚠️ Sem conexão com o servidor.<br><span style="font-weight:400;color:var(--t3);font-size:.76rem">Verifique sua internet e tente novamente.</span>';
+    btn.disabled = false; btn.innerHTML = 'Entrar'; return;
+  }
+  MEU_NOME = nome;
+  const hist = JSON.parse(localStorage.getItem('zl_mec_hist') || '[]');
+  if (!hist.includes(nome)) { hist.unshift(nome); if (hist.length > 8) hist.pop(); }
+  localStorage.setItem('zl_mec_hist', JSON.stringify(hist));
+  localStorage.setItem('zl_mec_atual', nome);
+  try {
+    await window._fsSet(window._mecDoc(nome), { ultimoAcesso: new Date().toISOString(), ativo: true }, { merge: true });
+  } catch(e) { console.warn('update acesso:', e); }
+  btn.disabled = false; btn.innerHTML = 'Entrar';
+  mostrarApp();
+}
+
+function sair() {
+  MEU_NOME = null;
+  localStorage.removeItem('zl_mec_atual');
+  if (unsTarefas) { unsTarefas(); unsTarefas = null; }
+  if (unsOrcs)    { unsOrcs();    unsOrcs    = null; }
+  document.getElementById('pg-login').style.display = 'flex';
+  document.getElementById('pg-app').style.display   = 'none';
+  carregarChips();
+}
+
+function mostrarApp() {
+  document.getElementById('pg-login').style.display = 'none';
+  document.getElementById('pg-app').style.display   = 'flex';
+  document.getElementById('hdr-mec').textContent    = MEU_NOME;
+  resetForm();
+  goTab('tarefas');
+  iniciarListeners();
+  verificarNotifPermission();
+}
+
+// ── TABS ──────────────────────────────
+function goTab(tab) {
+  tabAtual = tab;
+  ['tarefas','novo','orcs'].forEach(t => {
+    document.getElementById('t-'+t).classList.toggle('on', t===tab);
+    document.getElementById('pg-'+t).style.display = t===tab ? '' : 'none';
+  });
+}
+
+// ── LISTENERS TEMPO REAL ──────────────
+function iniciarListeners() {
+  if (!window._fbReady) { document.addEventListener('fb-ready', iniciarListeners, {once:true}); return; }
+  ouvirTarefas();
+  ouvirOrcs();
+}
+
+let _tarefasAntes = new Set();
+function ouvirTarefas() {
+  if (unsTarefas) return;
+  unsTarefas = window._fsSnap(window._tarefasCol(), snap => {
+    const minhas = [];
+    snap.forEach(d => { const t = d.data(); if (t.mecanico === MEU_NOME) minhas.push({...t,_id:d.id}); });
+    minhas.sort((a,b) => new Date(b.criadoEm)-new Date(a.criadoEm));
+    const atuaisIds = new Set(minhas.map(t=>t._id));
+    let novas = 0;
+    atuaisIds.forEach(id => { if (!_tarefasAntes.has(id)) novas++; });
+    if (novas > 0 && _tarefasAntes.size > 0) {
+      toast('🔔 '+novas+' nova(s) tarefa(s) atribuída(s)!', 'ok');
+      dispararNotif('ZL Motos — Nova Tarefa', novas+' tarefa(s) nova(s) atribuída(s) a você');
+    }
+    _tarefasAntes = atuaisIds;
+    const pendentes = minhas.filter(t=>!t.feita).length;
+    const badge = document.getElementById('badge-t');
+    badge.textContent = pendentes; badge.style.display = pendentes>0?'':'none';
+    renderTarefas(minhas);
+  });
+}
+
+function renderTarefas(lista) {
+  const el = document.getElementById('lista-tarefas');
+  if (!lista.length) { el.innerHTML = '<div class="vazio">✅ Nenhuma tarefa atribuída ainda</div>'; return; }
+  const pendentes = lista.filter(t=>!t.feita).sort((a,b)=>new Date(b.criadoEm)-new Date(a.criadoEm));
+  const feitas    = lista.filter(t=> t.feita).sort((a,b)=>new Date(b.criadoEm)-new Date(a.criadoEm));
+
+  function renderCard(t) {
+    const data = new Date(t.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const isOrc = t.tipo === 'orcamento';
+    const total = isOrc && t.itens ? t.itens.reduce((s,it)=>s+(parseFloat(it.valor)||0),0) : 0;
+    const itensHTML = isOrc && t.itens && t.itens.length ? `
+      <div style="margin-top:10px;border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow:hidden">
+        <div style="padding:6px 12px;background:rgba(200,16,46,.08);border-bottom:1px solid rgba(255,255,255,.07);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fca5a5">📋 Itens do Orçamento</div>
+        <table style="width:100%;border-collapse:collapse">
+          ${t.itens.map((it,i)=>`
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04);background:${i%2===0?'rgba(255,255,255,.02)':'transparent'}">
+              <td style="padding:7px 12px;font-size:.82rem;color:var(--tx)">${esc(it.desc||'—')}</td>
+              <td style="padding:7px 12px;font-size:.82rem;color:var(--t2);text-align:right;white-space:nowrap">${fmt(it.valor)}</td>
+            </tr>`).join('')}
+          <tr style="border-top:2px solid rgba(200,16,46,.3)">
+            <td style="padding:8px 12px;font-size:.82rem;font-weight:700;color:var(--t2)">TOTAL</td>
+            <td style="padding:8px 12px;font-size:.95rem;font-weight:700;color:var(--ok);text-align:right;font-family:var(--fm)">${fmt(total)}</td>
+          </tr>
+        </table>
+      </div>` : '';
+    return `
+      <div class="tarefa-card${t.feita?' feita':''}" id="tc-${t._id}" style="${isOrc?'border-left:3px solid var(--pr)':''}">
+        <div class="tc-top">
+          <div class="tc-check${t.feita?' feita':''}" onclick="toggleTarefa('${t._id}',${!t.feita})">${t.feita?'✓':''}</div>
+          <div class="tc-txt" style="width:100%">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <div class="tc-titulo">${esc(t.titulo||t.descricao||'Tarefa')}</div>
+              ${isOrc?'<span style="background:rgba(200,16,46,.15);border:1px solid rgba(200,16,46,.3);color:#fca5a5;font-size:.6rem;padding:1px 6px;border-radius:10px;font-weight:700">ORÇAMENTO</span>':''}
+            </div>
+            ${t.moto?`<div class="tc-moto">🏍️ ${esc(t.moto)}${t.placa?' · '+esc(t.placa):''}</div>`:''}
+            ${t.descricao&&t.tipo==='orcamento'?`<div class="tc-moto" style="margin-top:4px;color:var(--t2)">📝 ${esc(t.descricao)}</div>`:''}
+            ${t.desc&&t.tipo!=='orcamento'?`<div class="tc-moto" style="margin-top:4px">📝 ${esc(t.desc)}</div>`:''}
+            ${itensHTML}
+            <div class="tc-data" style="margin-top:6px">${t.feita?'✅ Concluído · ':'📅 '}${data}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  const gruposPend = {};
+  pendentes.forEach(t => {
+    const d = new Date(t.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    if (!gruposPend[d]) gruposPend[d] = [];
+    gruposPend[d].push(t);
+  });
+  const datasPend = Object.keys(gruposPend).sort((a,b)=>{
+    const p=s=>{const[d,m,y]=s.split('/');return new Date(y,m-1,d)};return p(b)-p(a);
+  });
+
+  let html = '';
+  if (pendentes.length) {
+    html += datasPend.map((data,di)=>{
+      const ts = gruposPend[data]; const gid='tar-pend-'+di; const aberto=di===0;
+      return `<div style="margin-bottom:10px">
+        <div onclick="toggleTarGrp('${gid}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(245,213,71,.08);border:1px solid rgba(245,213,71,.2);border-radius:var(--r1);cursor:pointer;user-select:none">
+          <span style="font-size:.82rem;font-weight:700;color:var(--wa)">⏳ ${data}</span>
+          <span style="font-size:.75rem;color:var(--t3)">${ts.length} tarefa(s) &nbsp;<span id="arr-${gid}">${aberto?'▼':'▶'}</span></span>
+        </div>
+        <div id="${gid}" style="padding-top:8px;${aberto?'':'display:none'}">${ts.map(renderCard).join('')}</div>
+      </div>`;
+    }).join('');
+  } else {
+    html += '<div style="text-align:center;padding:16px;color:var(--t3);font-size:.82rem">Nenhuma tarefa pendente 🎉</div>';
+  }
+
+  if (feitas.length) {
+    const gid='tar-feitas';
+    html += `<div style="margin-top:16px">
+      <div onclick="toggleTarGrp('${gid}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(43,224,140,.07);border:1px solid rgba(43,224,140,.18);border-radius:var(--r1);cursor:pointer;user-select:none">
+        <span style="font-size:.82rem;font-weight:700;color:var(--ok)">✅ Concluídas</span>
+        <span style="font-size:.75rem;color:var(--t3)">${feitas.length} tarefa(s) &nbsp;<span id="arr-${gid}">▶</span></span>
+      </div>
+      <div id="${gid}" style="padding-top:8px;display:none">${feitas.map(renderCard).join('')}</div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+function toggleTarGrp(id) {
+  const el=document.getElementById(id); const arr=document.getElementById('arr-'+id);
+  if(!el)return; const aberto=el.style.display!=='none';
+  el.style.display=aberto?'none':''; if(arr)arr.textContent=aberto?'▶':'▼';
+}
+
+async function toggleTarefa(id,feita) {
+  try {
+    await window._fsSet(window._tarefaDoc(id),{feita,atualizadoEm:new Date().toISOString()},{merge:true});
+    toast(feita?'✅ Marcado como concluído!':'Desmarcado','ok');
+  } catch(e){toast('Erro ao atualizar','er');}
+}
+
+// ── ORÇAMENTOS ────────────────────────
+let _orcsAntes = new Set();
+function ouvirOrcs() {
+  if (unsOrcs) return;
+  unsOrcs = window._fsSnap(window._rascCol(), snap => {
+    const meus = [];
+    snap.forEach(d=>{const r=d.data();if(r.mecanico===MEU_NOME)meus.push({...r,_id:d.id});});
+    meus.sort((a,b)=>new Date(b.criadoEm)-new Date(a.criadoEm));
+    let mudancas=0;
+    meus.forEach(r=>{
+      const antes=_orcsAntes.get&&_orcsAntes.get(r._id);
+      if(antes&&antes!==r.status&&(r.status==='aprovado'||r.status==='reprovado'))mudancas++;
+    });
+    if(mudancas>0&&_orcsAntes.size>0){toast('📋 Orçamento atualizado pelo dono!','ok');dispararNotif('ZL Motos — Orçamento Atualizado','Um orçamento seu foi revisado');}
+    _orcsAntes=new Map(meus.map(r=>[r._id,r.status]));
+    const novos=meus.filter(r=>r.status==='pendente').length;
+    const badge=document.getElementById('badge-o');
+    badge.textContent=novos;badge.style.display=novos>0?'':'none';
+    renderOrcs(meus);
+  });
+}
+
+function renderOrcs(lista) {
+  const el = document.getElementById('lista-orcs');
+  if (!lista.length) { el.innerHTML = '<div class="vazio">📋 Nenhum orçamento enviado ainda</div>'; return; }
+  const SL = {
+    pendente:  {txt:'⏳ Aguardando', cls:'bw'},
+    revisando: {txt:'👀 Em revisão', cls:'bi'},
+    aprovado:  {txt:'✅ Aprovado',   cls:'bs'},
+    reprovado: {txt:'❌ Reprovado',  cls:'bd2c'},
+  };
+  const grupos = {};
+  lista.forEach(r=>{
+    const d=new Date(r.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    if(!grupos[d])grupos[d]=[];grupos[d].push(r);
+  });
+  const datas=Object.keys(grupos).sort((a,b)=>{
+    const parse=s=>{const[d,m,y]=s.split('/');return new Date(y,m-1,d)};return parse(b)-parse(a);
+  });
+
+  el.innerHTML=datas.map((data,di)=>{
+    const orcs=grupos[data];const grpId='orc-grp-'+di;const aberto=di===0;
+    const cards=orcs.map(r=>{
+      const sl=SL[r.status]||{txt:r.status,cls:''};
+      const hora=new Date(r.criadoEm).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      const total=(r.itens||[]).reduce((s,it)=>s+(it.qtd||1)*(it.valor||0),0);
+      const linhasItens=(r.itens||[]).map(it=>`
+        <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:7px 10px;background:var(--ev);border-radius:var(--r1);margin-bottom:4px">
+          <div style="font-size:.82rem;font-weight:600;color:var(--tx)">${esc(it.desc)}</div>
+          <div style="font-size:.75rem;color:var(--t3);font-family:var(--fm)">${it.qtd||1}x</div>
+          <div style="font-size:.82rem;font-weight:700;color:var(--ok);font-family:var(--fm);white-space:nowrap">${fmt((it.qtd||1)*(it.valor||0))}</div>
+        </div>`).join('');
+
+      // Peças a comprar
+      const pecas = r.pecasComprar||[];
+      const pecasHTML = pecas.length ? `
+        <div class="orc-pecas-comprar">
+          <div class="orc-pecas-header" onclick="toggleOrcPecas(this)">
+            <div class="orc-pecas-header-l">
+              🛒 Peças a Comprar
+              <span style="background:rgba(245,213,71,.15);border:1px solid rgba(245,213,71,.25);color:var(--wa);font-size:.6rem;padding:1px 7px;border-radius:999px;font-weight:700">${pecas.length}</span>
+            </div>
+            <span class="orc-pecas-arrow">▶</span>
+          </div>
+          <div class="orc-pecas-body" style="display:none">
+            ${pecas.map(p=>`
+              <div class="orc-peca-item">
+                <span class="orc-peca-nome">⚙️ ${esc(p.desc)}</span>
+                <span class="orc-peca-qtd">${p.qtd}x</span>
+              </div>`).join('')}
+            <button onclick="copiarListaPecasOrc(${JSON.stringify(pecas).replace(/"/g,'&quot;')})"
+              style="margin-top:6px;background:none;border:1px solid rgba(245,213,71,.25);border-radius:6px;color:var(--wa);font-family:var(--ft);font-size:.74rem;font-weight:600;padding:5px 12px;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:5px">
+              📋 Copiar lista de compras
+            </button>
+          </div>
+        </div>` : '';
+
+      return `<div class="orc-card ${r.status}" style="margin-bottom:8px">
+        <div class="orc-top">
+          <div>
+            <div class="orc-moto">🏍️ ${esc(r.moto)}</div>
+            ${r.cliente?`<div style="font-size:.78rem;color:var(--t3);margin-top:2px">👤 ${esc(r.cliente)}</div>`:''}
+          </div>
+          <span class="orc-placa">${esc(r.placa)}</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge ${sl.cls}">${sl.txt}</span>
+          <span style="font-family:var(--fm);color:var(--ok);font-weight:700">${fmt(total)}</span>
+          <span style="font-size:.7rem;color:var(--t3)">🕐 ${hora}</span>
+        </div>
+        ${linhasItens?`
+          <div style="margin-bottom:10px">
+            <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:6px">🔧 Peças / Serviços</div>
+            ${linhasItens}
+            <div style="display:flex;justify-content:space-between;padding:7px 10px;border-top:1px solid var(--bd);margin-top:4px">
+              <span style="font-size:.75rem;font-weight:700;color:var(--t2)">TOTAL</span>
+              <span style="font-family:var(--fm);font-weight:700;color:var(--ok)">${fmt(total)}</span>
+            </div>
+          </div>`:''}
+        ${r.obs?`<div style="font-size:.78rem;color:var(--t3);margin-bottom:8px">📝 ${esc(r.obs)}</div>`:''}
+        ${r.obsDono?`<div class="orc-obs-dono"><strong>Dono:</strong> ${esc(r.obsDono)}</div>`:''}
+        ${pecasHTML}
+        <button class="btn-del-orc" onclick="deletarOrc('${r._id}')">🗑️ Excluir</button>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-bottom:10px">
+      <div onclick="toggleOrcGrp('${grpId}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(200,16,46,.08);border:1px solid rgba(200,16,46,.2);border-radius:var(--r1);cursor:pointer;user-select:none">
+        <span style="font-size:.82rem;font-weight:700;color:var(--pr)">${data}</span>
+        <span style="font-size:.75rem;color:var(--t3)">${orcs.length} orçamento(s) &nbsp;<span id="arr-${grpId}" style="font-size:.7rem">${aberto?'▼':'▶'}</span></span>
+      </div>
+      <div id="${grpId}" style="padding-top:8px;${aberto?'':'display:none'}">${cards}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleOrcGrp(id) {
+  const el=document.getElementById(id);const arr=document.getElementById('arr-'+id);
+  if(!el)return;const aberto=el.style.display!=='none';
+  el.style.display=aberto?'none':'';if(arr)arr.textContent=aberto?'▶':'▼';
+}
+
+function toggleOrcPecas(headerEl) {
+  const body  = headerEl.nextElementSibling;
+  const arrow = headerEl.querySelector('.orc-pecas-arrow');
+  if (!body) return;
+  const aberto = body.style.display !== 'none';
+  body.style.display = aberto ? 'none' : '';
+  if (arrow) { arrow.textContent = aberto ? '▶' : '▼'; arrow.classList.toggle('open', !aberto); }
+}
+
+function copiarListaPecasOrc(pecas) {
+  if (!pecas || !pecas.length) return;
+  const txt = '🛒 *Peças a Comprar*\n' + pecas.map((p,i) => `${i+1}. ${p.desc} — ${p.qtd}x`).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>toast('📋 Lista copiada!','ok')).catch(()=>toast('Erro ao copiar','er'));
+}
+
+async function deletarOrc(id) {
+  if (!confirm('Excluir este orçamento?')) return;
+  try { await window._fsDel(window._rascDoc(id)); toast('🗑️ Excluído','ok'); }
+  catch(e){toast('Erro ao excluir','er');}
+}
+
+// ── PEÇAS A COMPRAR (FORM) ────────────
+function addPeca() {
+  const desc = document.getElementById('np-desc').value.trim();
+  const qtd  = Math.max(1, parseFloat(document.getElementById('np-qtd').value)||1);
+  if (!desc) { toast('Informe o nome da peça','er'); document.getElementById('np-desc').focus(); return; }
+  pecasComprar.push({ id: Date.now(), desc, qtd });
+  document.getElementById('np-desc').value = '';
+  document.getElementById('np-qtd').value  = '1';
+  document.getElementById('np-desc').focus();
+  renderPecas();
+}
+
+function remPeca(id) {
+  pecasComprar = pecasComprar.filter(p=>p.id!==id);
+  renderPecas();
+}
+
+function renderPecas() {
+  const lista  = document.getElementById('pecas-lista');
+  const empty  = document.getElementById('pecas-empty');
+  const badge  = document.getElementById('pecas-count-badge');
+  const btnCop = document.getElementById('btn-copiar-pecas');
+
+  if (!pecasComprar.length) {
+    lista.innerHTML = '';
+    empty.style.display  = 'flex';
+    badge.classList.remove('visible');
+    btnCop.classList.remove('visible');
+    return;
+  }
+  empty.style.display = 'none';
+  badge.textContent   = pecasComprar.length;
+  badge.classList.add('visible');
+  btnCop.classList.toggle('visible', pecasComprar.length > 1);
+
+  lista.innerHTML = pecasComprar.map((p,i) => `
+    <div class="peca-row">
+      <div class="peca-num">${i+1}</div>
+      <div class="peca-desc">${esc(p.desc)}</div>
+      <div class="peca-qtd-badge">${p.qtd}x</div>
+      <button class="btn-x" onclick="remPeca(${p.id})" title="Remover">✕</button>
+    </div>
+  `).join('');
+}
+
+function copiarListaPecas() {
+  if (!pecasComprar.length) return;
+  const moto  = document.getElementById('f-moto').value.trim();
+  const placa = document.getElementById('f-placa').value.trim();
+  const header = moto ? `🏍️ *${moto}${placa?' ('+placa+')':''}*\n` : '';
+  const txt = header + '🛒 *Peças a Comprar*\n' + pecasComprar.map((p,i)=>`${i+1}. ${p.desc} — ${p.qtd}x`).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>toast('📋 Lista copiada para área de transferência!','ok')).catch(()=>toast('Erro ao copiar','er'));
+}
+
+// ── FORM ORÇAMENTO ────────────────────
+function resetForm() {
+  ['f-moto','f-placa','f-cli','f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  itens = []; pecasComprar = [];
+  renderItens(); renderPecas();
+}
+
+function addItem() {
+  const desc = document.getElementById('ni-desc').value.trim();
+  const qtd  = parseFloat(document.getElementById('ni-qtd').value)||1;
+  const val  = parseFloat(document.getElementById('ni-val').value)||0;
+  if (!desc) { toast('Informe a descrição','er'); return; }
+  if (val <= 0) { toast('Informe o valor','er'); return; }
+  itens.push({id:Date.now(),desc,qtd,valor:val});
+  document.getElementById('ni-desc').value='';
+  document.getElementById('ni-qtd').value ='1';
+  document.getElementById('ni-val').value ='';
+  document.getElementById('ni-desc').focus();
+  renderItens();
+}
+
+function remItem(id) { itens=itens.filter(i=>i.id!==id); renderItens(); }
+
+function renderItens() {
+  const el=document.getElementById('itens-lista');
+  if(!itens.length){el.innerHTML='';document.getElementById('total-disp').textContent='R$ 0,00';return;}
+  let total=0;
+  el.innerHTML=itens.map(it=>{
+    const sub=it.qtd*it.valor;total+=sub;
+    return `<div class="item-row">
+      <div><div class="item-desc">${esc(it.desc)}</div></div>
+      <div class="item-qtd">${it.qtd}x</div>
+      <div class="item-preco">${fmt(sub)}</div>
+      <button class="btn-x" onclick="remItem(${it.id})">✕</button>
+    </div>`;
+  }).join('');
+  document.getElementById('total-disp').textContent=fmt(total);
+}
+
+async function enviar() {
+  const moto  = document.getElementById('f-moto').value.trim();
+  const placa = document.getElementById('f-placa').value.trim();
+  const cli   = document.getElementById('f-cli').value.trim();
+  const obs   = document.getElementById('f-obs').value.trim();
+  if (!moto)        { toast('Informe a moto','er');  return; }
+  if (!placa)       { toast('Informe a placa','er'); return; }
+  if (!itens.length){ toast('Adicione pelo menos 1 item','er'); return; }
+
+  const btn=document.getElementById('btn-env');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Enviando...';
+
+  const total=itens.reduce((s,it)=>s+it.qtd*it.valor,0);
+  const id='rasc_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+
+  try {
+    await window._fsSet(window._rascDoc(id),{
+      id, mecanico:MEU_NOME, moto, placa:placa.toUpperCase(), cliente:cli,
+      obs, itens:itens.map(({desc,qtd,valor})=>({desc,qtd,valor})),
+      pecasComprar:pecasComprar.map(({desc,qtd})=>({desc,qtd})),
+      total, status:'pendente', obsDono:'',
+      criadoEm:new Date().toISOString(), atualizadoEm:new Date().toISOString()
+    });
+    toast('✓ Orçamento enviado!','ok');
+    resetForm();
+    setTimeout(()=>goTab('orcs'),700);
+  } catch(e){
+    toast('Erro ao enviar','er'); console.error(e);
+  } finally {
+    btn.disabled=false; btn.innerHTML='📤 Enviar para Revisão';
+  }
+}
+
+// ── NOTIFICAÇÕES ──────────────────────
+function verificarNotifPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') document.getElementById('notif-bar').style.display='flex';
+}
+async function pedirNotif() {
+  if (!('Notification' in window)) return;
+  const p=await Notification.requestPermission();
+  document.getElementById('notif-bar').style.display='none';
+  if(p==='granted')toast('🔔 Notificações ativadas!','ok');
+}
+function dispararNotif(titulo,corpo) {
+  if(!('Notification' in window)||Notification.permission!=='granted')return;
+  try{new Notification(titulo,{body:corpo,icon:''});}catch(e){}
+}
+
+// ── UTILS ─────────────────────────────
+function fmt(v){return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+let _tt;
+function toast(msg,cls=''){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='on '+cls;
+  clearTimeout(_tt); _tt=setTimeout(()=>{el.className='';},3200);
+}
+
+// ── PWA INSTALL ──────────────────────
+let _pwaPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); _pwaPrompt=e;
+  const fechou=sessionStorage.getItem('pwa_banner_fechado');
+  const standalone=window.matchMedia('(display-mode: standalone)').matches;
+  if(!fechou&&!standalone){const bar=document.getElementById('pwa-install-bar');if(bar)bar.style.display='flex';}
+});
+window.addEventListener('load',()=>{
+  const fechou=sessionStorage.getItem('pwa_banner_fechado');
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  if(standalone){const b1=document.getElementById('pwa-install-bar');const b2=document.getElementById('ios-install-bar');if(b1)b1.style.display='none';if(b2)b2.style.display='none';}
+});
+function instalarPWA(){
+  if(!_pwaPrompt)return; _pwaPrompt.prompt();
+  _pwaPrompt.userChoice.then(r=>{_pwaPrompt=null;document.getElementById('pwa-install-bar').style.display='none';if(r.outcome==='accepted')toast('✅ App instalado na tela inicial!','ok');});
+}
+function fecharBannerPWA(){document.getElementById('pwa-install-bar').style.display='none';sessionStorage.setItem('pwa_banner_fechado','1');}
+function fecharBannerIOS(){document.getElementById('ios-install-bar').style.display='none';sessionStorage.setItem('pwa_banner_fechado','1');}
+function verificarIOS(){
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  const fechou=sessionStorage.getItem('pwa_banner_fechado');
+  const bar=document.getElementById('ios-install-bar');
+  if(bar&&isIOS&&!isStandalone&&!fechou)bar.style.display='flex';
+}
+verificarIOS();
+window.addEventListener('load',verificarIOS);
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(reg=>{console.log('SW registrado:',reg.scope);}).catch(e=>console.warn('SW erro:',e));
+}
+
+// ── INIT ──────────────────────────────
+carregarChips();
+const guardado=localStorage.getItem('zl_mec_atual');
+if(guardado){
+  document.getElementById('in-nome').value=guardado;
+  const verificarAutoLogin=async()=>{
+    try{
+      const snap=await window._fsGet(window._mecDoc(guardado));
+      if(snap.exists()){MEU_NOME=guardado;mostrarApp();}
+      else{localStorage.removeItem('zl_mec_atual');document.getElementById('btn-entrar').disabled=false;}
+    }catch(e){document.getElementById('btn-entrar').disabled=false;}
+  };
+  if(window._fbReady)verificarAutoLogin();
+  else document.addEventListener('fb-ready',verificarAutoLogin,{once:true});
+}
+</script>
+</body>
+</html>
